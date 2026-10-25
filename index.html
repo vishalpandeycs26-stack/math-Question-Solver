@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Class 12 Maths Solver</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172033}
+header{background:#153e75;color:white;padding:24px 16px;text-align:center}
+header h1{margin:0 0 10px}
+main{max-width:950px;margin:20px auto;padding:12px}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px}
+input,select{padding:12px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px;flex:1;min-width:180px}
+.card{background:white;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px #0001}
+.card h3{color:#153e75;margin-top:0}
+.answer{background:#eff6ff;padding:12px;border-radius:8px;white-space:pre-wrap;line-height:1.6}
+.tag{color:#475569;font-size:13px}
+footer{text-align:center;padding:20px;color:#64748b}
+</style>
+</head>
+<body>
+<header>
+<h1>📘 Class 12 Maths Solver</h1>
+<p>40 गणित प्रश्न • Step-by-step Solutions • Hindi</p>
+</header>
+<main>
+<div class="controls">
+<input id="search" placeholder="प्रश्न या अध्याय खोजें..." oninput="render()">
+<select id="chapter" onchange="render()">
+<option value="All">सभी अध्याय</option>
+<option>Relations and Functions</option>
+<option>Matrices</option>
+<option>Determinants</option>
+<option>Differentiation</option>
+<option>Integration</option>
+<option>Differential Equations</option>
+<option>Vectors</option>
+<option>3D Geometry</option>
+<option>Probability</option>
+<option>Linear Programming</option>
+</select>
+</div>
+<div id="count"></div>
+<div id="questions"></div>
+</main>
+<footer>Maths Solver | Class 12 Practice Questions</footer>
+<script>
+const data = [
+["Relations and Functions","यदि f(x)=2x+3, तो f(2) ज्ञात कीजिए।","f(2)=2(2)+3=7"],
+["Relations and Functions","यदि f(x)=x²−1, तो f(3) ज्ञात कीजिए।","f(3)=9−1=8"],
+["Relations and Functions","क्या f(x)=2x एक one-one function है?","हाँ। यदि f(a)=f(b), तो 2a=2b, इसलिए a=b।"],
+["Relations and Functions","यदि f(x)=x+5, तो f⁻¹(x) ज्ञात कीजिए।","y=x+5 ⇒ x=y−5। अतः f⁻¹(x)=x−5।"],
+["Matrices","यदि A=[[1,2],[3,4]], तो A का order क्या है?","A में 2 पंक्तियाँ और 2 स्तम्भ हैं। Order = 2×2।"],
+["Matrices","[[1,2],[3,4]] का transpose लिखिए।","Transpose = [[1,3],[2,4]]।"],
+["Matrices","[[1,2],[3,4]] + [[2,1],[0,3]] ज्ञात करें।","तत्वों को जोड़ें: [[3,3],[3,7]]।"],
+["Matrices","2[[1,3],[2,4]] ज्ञात करें।","हर तत्व को 2 से गुणा करें: [[2,6],[4,8]]।"],
+["Determinants","|1 2; 3 4| का determinant निकालें।","det = 1×4 − 2×3 = 4−6 = −2।"],
+["Determinants","|2 0; 0 3| का determinant निकालें।","det = 2×3 − 0×0 = 6।"],
+["Determinants","|a b; c d| का सूत्र लिखिए।","Determinant = ad − bc।"],
+["Determinants","यदि determinant शून्य है, तो matrix कैसी है?","उस matrix को singular matrix कहते हैं।"],
+["Differentiation","d/dx(x³) निकालिए।","Power rule: d/dx(xⁿ)=nxⁿ⁻¹। उत्तर = 3x²।"],
+["Differentiation","d/dx(sin x) निकालिए।","उत्तर = cos x।"],
+["Differentiation","d/dx(cos x) निकालिए।","उत्तर = −sin x।"],
+["Differentiation","d/dx(eˣ) निकालिए।","उत्तर = eˣ।"],
+["Differentiation","d/dx(log x) निकालिए।","x>0 के लिए उत्तर = 1/x।"],
+["Differentiation","d/dx(x²+3x+2) निकालिए।","उत्तर = 2x+3+0 = 2x+3।"],
+["Integration","∫x² dx निकालिए।","Power rule: ∫xⁿdx=xⁿ⁺¹/(n+1)+C। उत्तर = x³/3+C।"],
+["Integration","∫2x dx निकालिए।","उत्तर = x²+C।"],
+["Integration","∫cos x dx निकालिए।","उत्तर = sin x+C।"],
+["Integration","∫sin x dx निकालिए।","उत्तर = −cos x+C।"],
+["Integration","∫1/x dx निकालिए।","उत्तर = ln|x|+C।"],
+["Integration","∫eˣ dx निकालिए।","उत्तर = eˣ+C।"],
+["Integration","∫₀¹ 2x dx निकालिए।","[x²]₀¹ = 1²−0² = 1।"],
+["Differential Equations","dy/dx=2x हल करें।","दोनों तरफ integrate करें: y=x²+C।"],
+["Differential Equations","dy/dx=3 का हल निकालिए।","Integrate करने पर y=3x+C।"],
+["Differential Equations","dy/dx=y का general solution लिखिए।","dy/y=dx ⇒ ln|y|=x+C ⇒ y=Ceˣ।"],
+["Vectors","वेक्टर a=2i+3j में i का coefficient क्या है?","i का coefficient 2 है।"],
+["Vectors","|3i+4j| का magnitude निकालिए।","Magnitude = √(3²+4²)=√25=5।"],
+["Vectors","i·j का मान क्या है?","i और j perpendicular हैं, इसलिए i·j=0।"],
+["Vectors","यदि a= i+2j और b=3i+j, तो a+b निकालें।","a+b=4i+3j।"],
+["3D Geometry","बिंदु (1,2,2) की origin से दूरी निकालिए।","d=√(1²+2²+2²)=√9=3।"],
+["3D Geometry","बिंदुओं (0,0,0) और (1,2,2) की दूरी निकालिए।","d=√((1−0)²+(2−0)²+(2−0)²)=3।"],
+["3D Geometry","x-axis पर स्थित बिंदु के y और z coordinates क्या होंगे?","x-axis पर किसी बिंदु का रूप (x,0,0) होता है।"],
+["Probability","एक सिक्का उछालने पर Head की probability क्या है?","P(H)=1/2।"],
+["Probability","एक पासे पर 6 आने की probability क्या है?","कुल 6 परिणाम, अनुकूल 1। Probability=1/6।"],
+["Probability","पासे पर सम संख्या आने की probability निकालिए।","सम संख्याएँ 2,4,6 हैं। P=3/6=1/2।"],
+["Linear Programming","Objective function का अर्थ क्या है?","वह function जिसे maximize या minimize करना होता है।"],
+["Linear Programming","Feasible region क्या होता है?","सभी constraints को संतुष्ट करने वाले बिंदुओं का साझा क्षेत्र।"]
+];
+
+function render(){
+ const term=document.getElementById("search").value.toLowerCase();
+ const ch=document.getElementById("chapter").value;
+ const filtered=data.filter(q=>
+   (ch==="All"||q[0]===ch)&&
+   (q[0]+" "+q[1]+" "+q[2]).toLowerCase().includes(term)
+ );
+ document.getElementById("count").textContent=
+   "दिखाए जा रहे प्रश्न: "+filtered.length+" / "+data.length;
+ document.getElementById("questions").innerHTML=filtered.map((q,i)=>`
+ <section class="card">
+ <div class="tag">${q[0]} • अभ्यास प्रश्न ${data.indexOf(q)+1}</div>
+ <h3>${q[1]}</h3>
+ <details>
+ <summary>हल देखें</summary>
+ <div class="answer">${q[2]}</div>
+ </details>
+ </section>`).join("")||"<p>कोई प्रश्न नहीं मिला।</p>";
+}
+render();
+</script>
+</body>
+</html>
