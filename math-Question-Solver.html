@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maths Question Solver</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #eef2ff;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      background: white;
+      padding: 24px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px #0002;
+    }
+
+    h1, h2 { color: #3730a3; }
+
+    .question-link {
+      display: block;
+      padding: 14px;
+      margin: 10px 0;
+      background: #e0e7ff;
+      color: #1e3a8a;
+      text-decoration: none;
+      border-radius: 8px;
+    }
+
+    .question-link:hover {
+      background: #c7d2fe;
+    }
+
+    #solution {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f0fdf4;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      line-height: 1.7;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: #4338ca;
+      color: white;
+      cursor: pointer;
+    }
+
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>📘 Maths Question Solver</h1>
+    <p>किसी सवाल पर क्लिक करें। उसका URL भी शेयर कर सकते हैं।</p>
+
+    <a class="question-link" href="?q=1">
+      Question 1: Solve x² - 5x + 6 = 0
+    </a>
+
+    <a class="question-link" href="?q=2">
+      Question 2: Find the derivative of x³ + 2x²
+    </a>
+
+    <a class="question-link" href="?q=3">
+      Question 3: Evaluate ∫ 2x dx
+    </a>
+
+    <a class="question-link" href="?q=4">
+      Question 4: Find the value of sin 30°
+    </a>
+
+    <hr>
+
+    <h2 id="question">अपना सवाल चुनें</h2>
+    <div id="solution">
+      सवाल चुनने के बाद उसका हल यहाँ दिखाई देगा।
+    </div>
+
+    <h2>अपना सवाल लिखें</h2>
+    <input id="customQuestion"
+      placeholder="अपना Maths question लिखें">
+
+    <br>
+    <button onclick="openQuestion()">Question URL बनाएँ</button>
+  </div>
+
+  <script>
+    const questions = {
+      1: {
+        title: "x² - 5x + 6 = 0",
+        solution:
+          "हल:\n x² - 5x + 6 = 0\n (x - 2)(x - 3) = 0\n इसलिए x = 2 या x = 3"
+      },
+      2: {
+        title: "Differentiate x³ + 2x²",
+        solution:
+          "हल:\n d(x³)/dx = 3x²\n d(2x²)/dx = 4x\n उत्तर: 3x² + 4x"
+      },
+      3: {
+        title: "Evaluate ∫ 2x dx",
+        solution:
+          "हल:\n ∫ 2x dx = 2 × x²/2 + C\n उत्तर: x² + C"
+      },
+      4: {
+        title: "Find sin 30°",
+        solution: "उत्तर: sin 30° = 1/2"
+      }
+    };
+
+    function showQuestion() {
+      const params = new URLSearchParams(location.search);
+      const id = params.get("q");
+      const question = questions[id];
+
+      if (question) {
+        document.getElementById("question").textContent =
+          question.title;
+        document.getElementById("solution").textContent =
+          question.solution;
+      } else if (params.has("custom")) {
+        document.getElementById("question").textContent =
+          params.get("custom");
+        document.getElementById("solution").textContent =
+          "यह आपका सवाल है। इसका हल अभी इस वेबसाइट में जोड़ा नहीं गया है।";
+      }
+    }
+
+    function openQuestion() {
+      const q = document.getElementById("customQuestion")
+        .value.trim();
+
+      if (!q) {
+        alert("पहले सवाल लिखिए!");
+        return;
+      }
+
+      location.href = "?custom=" + encodeURIComponent(q);
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
